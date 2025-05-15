@@ -2,56 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Movies;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 
-class MoviesController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $users = User::all();
+        return $users;
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:100',
+            'cedula'=> 'required|string|max:12',
+            'email' => 'required|string'
+        ]);
+    
+        return User::create($request->all());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Movies $movies)
+    public function show(User $user)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Movies $movies)
-    {
-        //
+        return $user;
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Movies $movies)
+    public function update(Request $request, User $user)
     {
         //
     }
@@ -59,7 +49,7 @@ class MoviesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Movies $movies)
+    public function destroy(User $user)
     {
         //
     }
