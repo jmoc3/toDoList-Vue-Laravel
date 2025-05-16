@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -21,13 +23,22 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:100',
-            'cedula'=> 'required|string|max:12',
-            'email' => 'required|string'
+        $validator = Validator::make($request->all(),[
+            'name' => 'required|string|max:100',
+            'email' => 'required|string',
+            'password' => 'required|min:6'
         ]);
+
+        if($validator->fails()){
+            return response()->json(['error'=> $validator->errors()],422);
+        }
+
+        $validated = $validator->validated();
+
+        \Log::info('Successfully storaged');
     
-        return User::create($request->all());
+        return User::create($validated); 
+        
     }
 
     /**
