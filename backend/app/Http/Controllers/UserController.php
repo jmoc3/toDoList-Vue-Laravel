@@ -34,7 +34,6 @@ class UserController extends Controller
         }
 
         $validated = $validator->validated();
-
         \Log::info('Successfully storaged');
     
         return User::create($validated); 
