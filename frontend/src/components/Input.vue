@@ -1,24 +1,48 @@
 <script setup>
-  import {ref} from "vue"
+  import {onMounted, ref} from "vue"
 
   const searchString = ref("")
-  const todos = ref(["hacer","cocinar"])
+  const todos = ref([])
 
   const addTodo = () => {
-    if(searchString.value==""){ 
-      return
-    }
-    todos.value.push(searchString.value.trim())
+    if(searchString.value==""){ return }
+    
+    const todoCapitalized = (searchString.value[0].toUpperCase() + searchString.value.slice(1)).trim()
     searchString.value = ""
-  }
-  const testing = () => {
-    console.log("yo wtf")
+    
+    const content = {
+      "descripcion":todoCapitalized,
+      "user_id":1
+    }
+
+    fetch(`http://localhost:8000/api/todos/`,{
+      method:"POST",
+      headers:{
+        "Content-type":"application/json"
+      },
+      body:JSON.stringify(content)
+
+    }).then(res=>res.json()).then(response => {
+      if(response.error) throw new Error("Minimo no digitado")
+      todos.value.push(response)
+    }).catch(error => console.log(error.message))
   }
 
   const removeTodo = (index) => {
-    todos.value.splice(index,1)
+    todos.value = todos.value.filter(record => record.id!=index)
+    fetch(`http://localhost:8000/api/todos/${index}`,{
+      method:"DELETE"
+    }).then(res=>res.json()).then(response => {
+      console.log(response.message)
+    })
   }
   
+  onMounted(()=>{
+    fetch("http://localhost:8000/api/todos").then(res => res.json()).then(response =>{
+      console.log(response)
+      todos.value = response
+    })
+  })
 </script>
 
 <template>
@@ -31,9 +55,9 @@
       </div>
     </form>
     <div class="todosList" >
-      <div class="todo" v-for="(todo, index) in todos" :key="index">
-        <span >{{ todo[0].toUpperCase() + todo.slice(1) }}</span>
-        <v-icon @click.stop="removeTodo(index)" name="co-trash"  />
+      <div v-if="todos.length>0" class="todo" v-for="(todo, index) in todos" :key="index">
+        <span >{{ todo.descripcion }}</span>
+        <v-icon @click.stop="removeTodo(todo.id)" name="co-trash"  />
       </div>
     </div>
   </div>
@@ -78,7 +102,7 @@ input:focus{
 }
 
 .todo{
-  background-color: #616161;
+  background-color: #383838;
   width: 100%;
   padding: .5rem 1rem;
 
@@ -87,7 +111,7 @@ input:focus{
 }
 
 .todo:hover{
-  color: #616161 ;
+  color: #313131 ;
   background-color: rgb(201, 201, 198);
   cursor: pointer;
   transition: all .1s ease-in-out ;

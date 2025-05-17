@@ -23,7 +23,7 @@ class TodoController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            "descripcion"=>'required|min:15|max:60',
+            "descripcion"=>'required|min:6|max:60',
             "user_id"=>'exists:users,id'
         ]);
 
@@ -72,6 +72,6 @@ class TodoController extends Controller
     public function destroy(Todo $todo)
     {   
         $todo->delete();
-        return response()->json(["message"=>"Deleted Successfully"]);
+        return response()->json(["message"=>"Delete Successfully"]);
     }
 }
