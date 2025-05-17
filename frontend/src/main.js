@@ -4,8 +4,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 
 import { OhVueIcon, addIcons } from "oh-vue-icons";
-import { CoTrash } from "oh-vue-icons/icons";
-addIcons(CoTrash)
+import { CoTrash, CoReload   } from "oh-vue-icons/icons";
+addIcons(CoTrash, CoReload )
 
 const app = createApp(App)
 app.component("v-icon", OhVueIcon);

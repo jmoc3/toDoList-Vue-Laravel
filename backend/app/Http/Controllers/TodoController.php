@@ -23,7 +23,7 @@ class TodoController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            "descripcion"=>'required|min:6|max:60',
+            "descripcion"=>'required|min:3|max:60',
             "user_id"=>'exists:users,id'
         ]);
 

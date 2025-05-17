@@ -3,6 +3,7 @@
 
   const searchString = ref("")
   const todos = ref([])
+  const loadingId = ref(null)
 
   const addTodo = () => {
     if(searchString.value==""){ return }
@@ -29,10 +30,12 @@
   }
 
   const removeTodo = (index) => {
-    todos.value = todos.value.filter(record => record.id!=index)
+    loadingId.value = index
     fetch(`http://localhost:8000/api/todos/${index}`,{
       method:"DELETE"
     }).then(res=>res.json()).then(response => {
+      todos.value = todos.value.filter(record => record.id!=index)
+      loadingId.value=null
       console.log(response.message)
     })
   }
@@ -57,7 +60,8 @@
     <div class="todosList" >
       <div v-if="todos.length>0" class="todo" v-for="(todo, index) in todos" :key="index">
         <span >{{ todo.descripcion }}</span>
-        <v-icon @click.stop="removeTodo(todo.id)" name="co-trash"  />
+        <v-icon v-if="loadingId!=todo.id" @click.stop.once="removeTodo(todo.id)" name="co-trash"  />
+        <v-icon v-else name="co-reload"  />
       </div>
     </div>
   </div>
